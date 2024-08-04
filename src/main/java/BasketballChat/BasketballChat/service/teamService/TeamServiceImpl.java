@@ -7,6 +7,9 @@ import BasketballChat.BasketballChat.storage.team.TeamStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class TeamServiceImpl implements TeamService {
     private final TeamStorage teamStorage;
@@ -33,8 +36,17 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamDto updateTeam(TeamDto teamDto,Long id) {
-        Team team=TeamMapper.teamDtoToTeam(teamDto);
-        return TeamMapper.teamToTeamDto(teamStorage.updateTeam(team,id));
+    public TeamDto updateTeam(TeamDto teamDto, Long id) {
+        Team team = TeamMapper.teamDtoToTeam(teamDto);
+        return TeamMapper.teamToTeamDto(teamStorage.updateTeam(team, id));
+    }
+
+    @Override
+    public List<TeamDto> searchTeam(String name) {
+        List<TeamDto> list = new ArrayList<>();
+        if (name != null) {
+            list.addAll(TeamMapper.listDtoToList(teamStorage.searchTeamByName(name)));
+        }
+        return list;
     }
 }

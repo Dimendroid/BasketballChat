@@ -5,8 +5,11 @@ import BasketballChat.BasketballChat.model.team.Team;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -54,5 +57,11 @@ public class TeamStorageImpl implements TeamStorage {
             log.warn("Team c id {} не найдено", id);
             throw new TeamNotFoundException("Team c таким id не найдено");
         }
+    }
+
+    @Override
+    public List<Team> searchTeamByName(String name) {
+        List<Team> list=new ArrayList<>(teams.values());
+        return list.stream().filter(a->a.getName().equalsIgnoreCase(name)).collect(Collectors.toList());
     }
 }

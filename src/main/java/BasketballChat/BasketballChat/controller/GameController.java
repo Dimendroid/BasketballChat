@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @RestController
 @Slf4j
 @RequestMapping("/game")
@@ -39,8 +43,18 @@ public class GameController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<GameDto> updateGame(@RequestBody GameDto gameDto,@PathVariable Long id) {
-        log.info("получен Patch запрос на получение с Game c id {}", gameDto.getId());
-        return new ResponseEntity<>(gameService.updateGame(gameDto,id), HttpStatus.OK);
+    public ResponseEntity<GameDto> updateGame(@RequestBody GameDto gameDto, @PathVariable Long id) {
+        log.info("получен Patch запрос на обновление Game c id {}", gameDto.getId());
+        return new ResponseEntity<>(gameService.updateGame(gameDto, id), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<GameDto>> searchGame(@RequestParam(required = false) LocalDate date,
+                                                    @RequestParam(required = false) String address,
+                                                    @RequestParam(required = false) String skillPlayer,
+                                                    @RequestParam(required = false) String mode) {
+        log.info("получен GET запрос на поиск Game c date {}, address {}, skillPlater {}, mode {}",
+                date, address, skillPlayer, mode);
+        return new ResponseEntity<>(gameService.searchGame(date, address, skillPlayer, mode), HttpStatus.OK);
     }
 }

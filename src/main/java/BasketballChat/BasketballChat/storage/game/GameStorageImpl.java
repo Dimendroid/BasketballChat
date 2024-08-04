@@ -1,12 +1,17 @@
 package BasketballChat.BasketballChat.storage.game;
 
+import BasketballChat.BasketballChat.dto.GameDto;
 import BasketballChat.BasketballChat.exception.GameNotFoundException;
 import BasketballChat.BasketballChat.model.game.Game;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -60,5 +65,30 @@ public class GameStorageImpl implements GameStorage {
             log.warn("Game c таким id {} не найден", id);
             throw new GameNotFoundException("Game c таким id не найден");
         }
+    }
+
+    @Override
+    public List<Game> searchByDate(LocalDate date) {
+        List<Game> list=new ArrayList<>(games.values());
+        return list.stream().filter(a->a.getDate().toLocalDate().equals(date)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Game> searchByAddress(String address) {
+        List<Game> list=new ArrayList<>(games.values());
+        return list.stream().filter(a->a.getAddress().equalsIgnoreCase(address)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Game> searchBySkillPlayer(String skillPlayer) {
+        List<Game> list=new ArrayList<>(games.values());
+        return list.stream().filter(a->a.getSkillPlayer().toString().equalsIgnoreCase(skillPlayer)).
+                collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Game> searchByMode(String mode) {
+        List<Game> list=new ArrayList<>(games.values());
+        return list.stream().filter(a->a.getMode().toString().equalsIgnoreCase(mode)).collect(Collectors.toList());
     }
 }

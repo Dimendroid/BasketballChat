@@ -4,6 +4,7 @@ import BasketballChat.BasketballChat.dto.UserDto;
 import BasketballChat.BasketballChat.mapper.UserMapper;
 import BasketballChat.BasketballChat.model.user.User;
 import BasketballChat.BasketballChat.storage.user.UserStorage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
 
@@ -52,19 +54,24 @@ public class UserServiceImpl implements UserService {
         if (name != null && list.isEmpty()) {
             list.addAll(UserMapper.ListUserToListUserDto(userStorage.searchUserByName(name)));
         } else if (name != null) {
-            List<UserDto> temp = list.stream().filter(
-                    a -> a.getName().equalsIgnoreCase(name)).toList();
-            list.clear();
-            list.addAll(temp);
+            list = filterByName(list, name);
         }
         if (categoryPlayer != null && list.isEmpty()) {
             list.addAll(UserMapper.ListUserToListUserDto(userStorage.searchUserByCategoryPlayer(categoryPlayer)));
         } else if (categoryPlayer != null) {
-            List<UserDto> temp = list.stream().filter(
-                    a -> a.getCategoryPlayer().toString().equalsIgnoreCase(categoryPlayer)).toList();
-            list.clear();
-            list.addAll(temp);
+           list=filterByCategoryPlayer(list,categoryPlayer);
         }
-        return list.stream().distinct().collect(Collectors.toList());
+        log.info("получен список User с surname {}, name {}, categoryPlayer {}", surname, name, categoryPlayer);
+        return list;
+    }
+
+    private List<UserDto> filterByName(List<UserDto> list, String name) {
+        return list.stream().filter(
+                a -> a.getName().equalsIgnoreCase(name)).toList();
+    }
+
+    private List<UserDto> filterByCategoryPlayer(List<UserDto> list, String categoryPlayer) {
+        return list.stream().filter(
+                a -> a.getCategoryPlayer().toString().equalsIgnoreCase(categoryPlayer)).toList();
     }
 }
